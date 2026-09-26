@@ -20,6 +20,10 @@ export const site = {
     linkedin: "https://www.linkedin.com/in/gabriel-brument",
     github: "https://github.com/SobshDev",
   },
+  /** Files in public/avatar, built with `npm run avatar`. Set animated to false for a still avatar without idle/talking videos. */
+  avatar: {
+    animated: true,
+  },
   title: "Gabriel Brument — ask the agent version of me",
   description:
     "Founder of Mentem. Chat with an AI version of Gabriel about what he's building, what he's shipped, and how he works.",

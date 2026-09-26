@@ -36,17 +36,29 @@ Open [localhost:3000](http://localhost:3000). When `MODEL_API_KEY` is empty, the
 | `npm run build` | Production build (standalone output) |
 | `npm run start` | Serve the production build |
 | `npm run typecheck` | TypeScript check |
+| `npm run avatar -- <folder>` | Build avatar assets from your source files |
 
-## Customizing the persona
+## Make it yours
+
+### Persona
 
 | Path | Contents |
 | --- | --- |
 | [`content/profile.md`](content/profile.md) | Everything the agent knows about you. The agent may repeat any of it, so keep it free of private details. |
 | [`content/site.ts`](content/site.ts) | Name, contact links, suggested questions, `/` topics and project cards |
-| [`public/avatar/`](public/avatar) | Portraits and the idle and talking video loops |
 | [`public/logos/`](public/logos) | Logos shown on project cards |
 
 In a reply, the model writes `[[project:id]]` to show a project card and `>> a | b | c` to offer follow-up questions. The client renders both as plain text components and never injects HTML.
+
+### Avatar
+
+Generate a portrait of yourself with any AI image tool. Optionally, animate it into idle and talking loops with an image-to-video model. Then build the web assets:
+
+```bash
+npm run avatar -- ./my-avatar   # portrait.png, plus optional portrait-open.png, idle.mp4 and talking.mp4
+```
+
+The script crops and compresses everything into `public/avatar/` and regenerates the favicons. For a still avatar, a single portrait is enough. **[Read the avatar guide](docs/AVATAR.md)** for ready-to-use prompts, tips for seamless loops and troubleshooting.
 
 ## Architecture
 
@@ -110,7 +122,9 @@ Put the `web` service on port `3000` behind a reverse proxy that terminates HTTP
 app/          Page, layout and API routes (chat, session, health)
 components/   Chat experience, avatar and reply rendering
 content/      Persona and public site content
+docs/         Guides, including creating your avatar
 lib/          Model client, limits, sessions, validation, config
 public/       Avatar media and logos
+scripts/      Avatar build script
 proxy.ts      Content Security Policy
 ```

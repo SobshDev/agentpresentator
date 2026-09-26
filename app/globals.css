@@ -171,6 +171,10 @@ a {
   opacity: 1;
 }
 
+.avatar__video--still {
+  transition-duration: 70ms;
+}
+
 .avatar__presence {
   position: absolute;
   right: 7%;
