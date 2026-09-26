@@ -1,0 +1,35 @@
+services:
+  web:
+    build: .
+    restart: unless-stopped
+    environment:
+      SITE_ORIGIN: ${SITE_ORIGIN:?Set SITE_ORIGIN to the public https origin, e.g. https://gabriel.example.com}
+      MODEL_BASE_URL: ${MODEL_BASE_URL:?Set MODEL_BASE_URL to your shared_router URL}
+      MODEL_API_KEY: ${MODEL_API_KEY:?Set MODEL_API_KEY to the router key issued for the website}
+      MODEL_ID: ${MODEL_ID:-claude-sonnet-4-6}
+      SESSION_SECRET: ${SESSION_SECRET:?Set SESSION_SECRET to 32+ random characters}
+      REDIS_URL: redis://redis:6379
+      TURNSTILE_SITE_KEY: ${TURNSTILE_SITE_KEY:-}
+      TURNSTILE_SECRET_KEY: ${TURNSTILE_SECRET_KEY:-}
+      TRUSTED_PROXY_HOPS: ${TRUSTED_PROXY_HOPS:-1}
+      LIMIT_MESSAGES_PER_DAY: ${LIMIT_MESSAGES_PER_DAY:-1500}
+      LIMIT_TOKENS_PER_DAY: ${LIMIT_TOKENS_PER_DAY:-2000000}
+    expose:
+      - "3000"
+    depends_on:
+      - redis
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m,noexec,nosuid
+      - /app/.next/cache:size=64m,noexec,nosuid,uid=10001,gid=10001
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--save", "", "--appendonly", "no", "--maxmemory", "64mb", "--maxmemory-policy", "volatile-ttl"]
+    expose:
+      - "6379"
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
